@@ -1,0 +1,30 @@
+# Alternative to the long-running service: poll once, then exit.
+#
+# Use this if you prefer a timer over a resident process. Only one of the two
+# should be enabled — running both means two importers sharing one database.
+#
+#   sudo systemctl enable --now hdfc2ff-once.timer
+
+[Unit]
+Description=Import HDFC Bank alert emails into Firefly III (single poll)
+Documentation=file:/opt/hdfc2ff/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+
+# Adjust to the user that owns the working directory.
+User=hdfc2ff
+
+# Holds the binary and the .env file with credentials.
+WorkingDirectory=/opt/hdfc2ff
+ExecStart=/opt/hdfc2ff/hdfc2ff once
+
+# A poll is bounded internally. If it exceeds this, something is wrong and the
+# next run will pick up where this one left off.
+TimeoutStartSec=180
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hdfc2ff

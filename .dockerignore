@@ -1,0 +1,15 @@
+# Build context hygiene. Two entries here matter for safety, not just size:
+# .env holds credentials, and testdata/samples holds real bank emails.
+.git
+.gitignore
+.env
+.env.*
+*.db
+*.db-shm
+*.db-wal
+*.db.*
+/hdfc2ff
+/dist
+docker-compose.yml
+testdata/samples/*.eml
+testdata/samples/*.json

@@ -1,0 +1,20 @@
+# Credentials — never commit these.
+.env
+.env.*
+
+# Local state
+*.db
+*.db-shm
+*.db-wal
+*.db.*
+
+# Build output
+/hdfc2ff
+/dist/
+
+# Real bank emails are personal financial data. They are kept local so the
+# golden tests can run, and are never pushed. See testdata/samples/README.md.
+/testdata/samples/*.eml
+/testdata/samples/*.json
+!/testdata/samples/scrubbed/*.eml
+!/testdata/samples/scrubbed/*.json

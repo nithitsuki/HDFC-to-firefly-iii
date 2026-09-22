@@ -1,0 +1,41 @@
+# Long-running importer with a meaningful healthcheck.
+#
+#   docker compose up -d
+#   docker compose logs -f
+#
+# Credentials come from .env, which is gitignored. The named volume holds the
+# SQLite state: without it, a restart re-imports the whole lookback window.
+
+services:
+  hdfc2ff:
+    build: .
+    image: hdfc2ff:latest
+    container_name: hdfc2ff
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    # Override DB_PATH so state lands on the volume rather than the image layer.
+    environment:
+      DB_PATH: /data/hdfc2ff.db
+      TIMEZONE: Asia/Kolkata
+
+    volumes:
+      - hdfc2ff-data:/data
+
+    # The importer only makes outbound connections; nothing needs to reach it.
+    # Dropping capabilities and forbidding privilege escalation costs nothing.
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  hdfc2ff-data:

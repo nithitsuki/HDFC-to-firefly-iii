@@ -1,0 +1,33 @@
+[Unit]
+Description=Import HDFC Bank alert emails into Firefly III
+Documentation=file:/opt/hdfc2ff/README.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# Adjust to the user that owns the working directory.
+User=hdfc2ff
+
+# Holds the binary and the .env file with credentials.
+WorkingDirectory=/opt/hdfc2ff
+ExecStart=/opt/hdfc2ff/hdfc2ff run
+
+# A single poll is bounded internally, so a stuck process means something is
+# genuinely wrong. Restart it.
+Restart=always
+RestartSec=30s
+TimeoutStopSec=90s
+
+# The importer holds no privileged resources and needs no writable paths beyond
+# its working directory.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/opt/hdfc2ff
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hdfc2ff

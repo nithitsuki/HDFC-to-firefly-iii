@@ -1,0 +1,15 @@
+[Unit]
+Description=Poll Gmail for HDFC Bank transaction alerts
+
+[Timer]
+# Give the network a moment after boot, then settle into a steady cadence.
+OnBootSec=2min
+OnUnitActiveSec=5min
+
+# If the machine was asleep or off, run once on resume rather than skipping.
+Persistent=true
+
+Unit=hdfc2ff-once.service
+
+[Install]
+WantedBy=timers.target
